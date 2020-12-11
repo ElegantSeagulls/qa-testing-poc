@@ -1,0 +1,65 @@
+const { webkit } = require('playwright');
+const expect = require('expect');
+const fsp = require('fs').promises;
+const compareImages = require('resemblejs/compareImages');
+
+const browserOptions = {
+  args: [
+    `--restore-last-session`,
+    `--allow-insecure-localhost`,
+  ],
+  ignoreDefaultArgs: [
+    '--mute-audio',
+    '--disable-gpu',
+    '--no-sandbox',
+    '--disable-web-security',
+    '--disable-dev-profile',
+    `--disable-default-apps`,
+    `--disable-dev-shm-usage`,
+    `--disable-sync`,
+    `--disable-hang-monitor`,
+    `--disable-extensions`,
+    `--enable-automation`,
+    `--password-store=basic`,
+    `--use-mock-keychain`,
+    `--disable-popup-blocking`,
+    `--disable-prompt-on-repost`,
+    `--force-color-profile=srgb`,
+    `--disable-features=TranslateUI,BlinkGenPropertyTrees,ImprovedCookieControls,SameSiteByDefaultCookies`,
+    `--disable-background-timer-throttling`,
+    `--disable-backgrounding-occluded-windows`,
+    `--disable-ipc-flooding-protection`,
+    `--disable-renderer-backgrounding`,
+    `--disable-background-networking`,
+    `--disable-client-side-phishing-detection`,
+    `--disable-component-extensions-with-background-pages`,
+    `--metrics-recording-only`,
+    `--no-first-run`,
+  ],
+  handleSIGINT: false,
+  handleSIGTERM: false,
+  handleSIGHUP: false,
+  timeout: 0, // wait for the browser to start
+  bypassCSP: true, // Toggles bypassing page's Content-Security-Policy
+};
+
+let browser;
+let context;
+let page;
+
+beforeAll(async () => {
+  browser = await webkit.launch(browserOptions);
+  context = await browser.newContext();
+});
+
+afterAll(async () => {
+  await browser.close();
+});
+
+beforeEach(async () => {
+  page = await context.newPage();
+});
+
+afterEach(async () => {
+  await page.close();
+});
